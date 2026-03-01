@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-python
+  template:
+    metadata:
+      labels:
+        app: sample-python
+    spec:
+      containers:
+      - name: app
+        image: local-python-app:latest          # We'll update tag in CI/CD
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Never                 # Important for local images
