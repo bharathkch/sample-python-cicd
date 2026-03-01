@@ -1,0 +1,26 @@
+name: CI/CD for Python Flask App
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted          # or [self-hosted, local] if you added labels
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t local-python-app:${{ github.sha }} .
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/sample-python-app app=local-python-app:${{ github.sha }}
+          kubectl rollout status deployment/sample-python-app --timeout=2m
+
+      - name: Quick Test
+        run: |
+          curl -f http://localhost:30005 || exit 1
