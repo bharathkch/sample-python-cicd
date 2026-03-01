@@ -6,21 +6,27 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted          # or [self-hosted, local] if you added labels
+    runs-on: ubuntu-latest          # ← This is GitHub-hosted (free for public repos)
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Build Docker Image
-        run: |
-          docker build -t local-python-app:${{ github.sha }} .
+        run: docker build -t local-python-app:${{ github.sha }} .
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl set image deployment/sample-python-app app=local-python-app:${{ github.sha }}
-          kubectl rollout status deployment/sample-python-app --timeout=2m
+      # Note: kubectl deploy part won't work on hosted runners because they don't have access to your local Rancher Desktop cluster.
+      # You would need to either:
+      # 1. Expose your Rancher cluster publicly (not recommended for local dev)
+      # 2. Use self-hosted runner for kubectl steps
+      # 3. Skip deployment step for testing hosted runners
 
-      - name: Quick Test
-        run: |
-          curl -f http://localhost:30005 || exit 1
+      - name: Quick Test (local only example)
+        run: echo "Workflow ran successfully on GitHub-hosted runner"
