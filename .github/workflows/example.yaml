@@ -11,12 +11,21 @@ jobs:
     steps:
       -name: Checkout repo
        uses: actions/checkout@v6
+
+      -name: List and Read Files
+       run:
+        echo "My first Github Actions Job"
+        ls -larth
+        cat README.md
+
+      -name: Generate ASCII Artwork
+       run: cowsay -f dragon "Run for Cover, I am a DRAGON .... RAWR" >> dragon.txt
        
-      - name: Hello Bharath
-        run: echo("Hello Bharath")
+      # - name: Hello Bharath
+      #   run: echo("Hello Bharath")
 
-      - name: List Files
-        run: ls
+      # - name: List Files
+      #   run: ls
 
-      - name: Read the file
-        run: cat Dockerfile
+      # - name: Read the file
+      #   run: cat Dockerfile
