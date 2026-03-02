@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest          # ← This is GitHub-hosted (free for public repos)
 
     steps:
+      -name: Checkout repo
+       uses: actions/checkout@v6
+       
       - name: Hello Bharath
         run: echo("Hello Bharath")
 
